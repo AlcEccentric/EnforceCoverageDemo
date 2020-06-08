@@ -1,0 +1,25 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - "echo Logging in to Amazon ECR..."
+      - "$(aws ecr get-login --region us-east-2 --no-include-email)"
+      - REPOSITORY_URI=498445074879.dkr.ecr.us-east-2.amazonaws.com/enforce-coverage-demo
+      - IMAGE_TAG=latest
+      - echo Writing image definitions file...
+      - printf '[{"name":"enforce-coverage-demo","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
+  build:
+    commands:
+      - "echo Build started on `date` "
+      - "cd EnforceCoverageDemo"
+      - "echo Building the Docker image..."
+      - "docker build -t enforce-coverage-demo ."
+      - "docker tag enforce-coverage-demo:latest $REPOSITORY_URI:$IMAGE_TAG"
+  post_build:
+    commands:
+      - "echo Build completed on `date`"
+      - "echo Pushing the Docker image..."
+      - "docker push $REPOSITORY_URI:$IMAGE_TAG"
+artifacts:
+    files: imagedefinitions.json
