@@ -10,7 +10,7 @@ phases:
       - echo Writing image definitions file...
       - printf '[{"name":"enforce-coverage-demo","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
       - dotnet restore
-      - dotnet test EnforceCoverageDemo.Tests/EnforceCoverageDemo.Tests.csproj /p:CollectCoverage=true /p:ThresholdType=Line /p:Threshold=85 || { echo "\n=========================\nCode Coverage is not lower than standards!\n=========================\n"; exit 1; }
+      - dotnet test EnforceCoverageDemo.Tests/EnforceCoverageDemo.Tests.csproj /p:CollectCoverage=true /p:ThresholdType=Line /p:Threshold=85 || { printf '=%.0s' {1..42}; "\nCode Coverage is not lower than standards!\n"; printf '=%.0s' {1..42}; exit 1; }
   build:
     commands:
       - "echo Build started on `date` "
